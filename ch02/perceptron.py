@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Perceptron(object):
@@ -56,19 +57,35 @@ class Perceptron(object):
             errors = 0
 
             for xi, target in zip(x, y):
-                update = self.eta * (target - self.predict(xi))
+                prediction = self.predict(xi)
+                update = self.eta * (target - prediction)
 
                 self.w_[1:] += update * xi
                 self.w_[0] += update
 
                 errors += int(update != 0.0)
 
+                if update != 0.0:
+                    # plot updated line
+                    # Note: only works for data sets with 2 features!
+                    line_x = np.linspace(x[:, 0].min(), x[:, 0].max(), 2)
+                    line_y = (self.w_[1] / (-1 * self.w_[2]) * line_x) + self.w_[0] / (-1 * self.w_[2])
+
+                    plt.plot(line_x, line_y)
+
+                    plt.show()
+
             self.errors_.append(errors)
 
-    def net_input(self, x):
-        """Calculate net input"""
-        return np.dot(x, self.w_[1:]) + self.w_[0]
+            if errors == 0:
+                break
 
-    def predict(self, x):
+    def net_input(self, xi):
+        """Calculate net input"""
+        net_input = np.dot(xi, self.w_[1:]) + self.w_[0]
+        return net_input
+
+    def predict(self, xi):
         """Return class label after unit step"""
-        return np.where(self.net_input(x) >= 0.0, 1, -1)
+        prediction = np.where(self.net_input(xi) >= 0.0, 1, -1)
+        return prediction
