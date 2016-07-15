@@ -52,7 +52,7 @@ class AdalineGD(object):
         # the extra one is for the zero-weight (i.e. the threshold)
         self.w_ = np.zeros(1 + x.shape[1])
 
-        # reset errors
+        # reset cost
         self.cost_ = []
 
         for _ in range(self.n_iter):
